@@ -6,10 +6,12 @@
 	mkdir -p /run/php/;
 	touch /run/php/php7.3-fpm.pid;
 
-if [ ! -f /var/www/html/wp-config.php]; then
+	
+
+if  [ ! -f "/var/www/html/wp-config.php" ]; then
 	echo "Wordpress: setting up... "
 	mkdir -p /var/www/html
-	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar;
+	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /dev/null 2>&1
 	chmod +x wp-cli.phar; 
 	mv wp-cli.phar /usr/local/bin/wp;
 	cd /var/www/html;

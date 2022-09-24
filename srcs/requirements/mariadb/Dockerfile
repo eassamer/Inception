@@ -1,13 +1,23 @@
 FROM debian:buster
 
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_ADMIN_LOGIN
+ARG DB_ADMIN_PASSWORD
+ARG LHOST
+ARG DB_CHARSET
+
 RUN apt-get update
 RUN apt-get install -y mariadb-server
 
 EXPOSE 3306
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
-COPY ./tools /var/www/
+ADD ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
+ADD ./tools /var/www/
 
-RUN service mysql start && mysql < /var/www/initial_db.sql && rm -f /var/www/initial_db.sql;
+RUN chmod +x /var/www/*
 
-CMD ["mysqld"]
+RUN "/var/www/script2.sh"
+ENTRYPOINT ["mysqld"]

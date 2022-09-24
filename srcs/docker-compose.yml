@@ -5,30 +5,25 @@ networks:
     name: app-network
     driver: bridge
 
-volumes:
-  wp:
-    driver: local
-    name: wp
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/eassamer/data/wordpress
-  db:
-    driver: local
-    name: db
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/eassamer/data/mariadb
 
 services:
   mariadb:
     container_name: mariadb
-    build: ./requirements/mariadb
+    build:
+      context: ./requirements/mariadb
+      args:
+        DB_NAME: ${DB_NAME}
+        DB_USER: ${DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD}
+        DB_HOST: ${DB_HOST}
+        DB_ADMIN_LOGIN: ${DB_ADMIN_LOGIN}
+        DB_ADMIN_PASSWORD: ${DB_ADMIN_PASSWORD}
+        LHOST: ${LHOST}
+        DB_CHARSET: ${DB_CHARSET}
     env_file:
       - .env
     volumes:
-      - db:/var/lib/mysql
+      - /home/eassamer/data/mysql:/db/mysql
     networks:
       - app-network
     restart: unless-stopped
@@ -41,7 +36,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - wp:/var/www/html
+      - /home/eassamer/data/wordpress:/var/www/html/
     networks:
       - app-network
     restart: unless-stopped
@@ -53,8 +48,19 @@ services:
       - "443:443"
     depends_on:
       - wordpress
+      - adminer
     volumes:
-      - wp:/var/www/html
+      - /home/eassamer/data/wordpress:/var/www/html/
+      - /home/eassamer/data/adminer:/var/www/adminer/
     networks:
       - app-network
     restart: unless-stopped
+  adminer:
+    container_name: adminer
+    build : ./requirements/bonus/adminer
+    depends_on:
+      - mariadb
+    volumes:
+      - /home/eassamer/data/adminer:/var/www/adminer/
+    networks:
+      - app-network
