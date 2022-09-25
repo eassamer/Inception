@@ -7,8 +7,6 @@ echo "FLUSH PRIVILEGES;" >> /var/www/initial_db.sql
 echo "ALTER USER ${DB_ADMIN_LOGIN}@${LHOST} IDENTIFIED BY '${DB_ADMIN_PASSWORD}';" >> /var/www/initial_db.sql
 
 
-cat /var/www/initial_db.sql
-
 service mysql start
 mkdir -p /db/mysql
 chmod 777 /db/mysql

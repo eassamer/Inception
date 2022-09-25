@@ -6,9 +6,11 @@ chown -R 755 /var/www/*;
 mkdir -p /run/php/;
 touch /run/php/php7.3-fpm.pid;
 
-wget https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php > /dev/null
+if [ ! -f  /var/www/adminer/index.php ]; then
+    wget https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php > /dev/null
+    cp adminer-4.8.1.php /var/www/adminer/index.php
+fi
 
-cp adminer-4.8.1.php /var/www/adminer/index.php
-
+echo "adminer"
 
 /usr/sbin/php-fpm7.3 --nodaemonize
